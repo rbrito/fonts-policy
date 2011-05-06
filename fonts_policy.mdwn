@@ -220,7 +220,7 @@ what upstream ships, some manipulation is allowed and even encouraged, for
 the removal of glyphs for reduction of the size to fit in installation
 media.
 
-In any case, the package should clearly state that the font was manipulated
+In any case, the package SHOULD clearly state that the font was manipulated
 in the `README.Debian` file of the generated binary package.
 
 
