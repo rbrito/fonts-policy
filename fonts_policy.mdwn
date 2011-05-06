@@ -1,6 +1,6 @@
 Title: Debian Fonts Task Force Packaging Policy
 State: DRAFT
-Date: 2011-05-05
+Date: 2011-05-06
 Drivers: Rogério Brito <rbrito@ime.usp.br>
 Abstract:
  Propose a file layout, set of conventions and best practices for packaging
