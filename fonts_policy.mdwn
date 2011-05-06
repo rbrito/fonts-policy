@@ -290,6 +290,21 @@ listing the maintainers.
 It is RECOMMENDED that each source package have *at least* two persons
 listed as the contents of `Uploaders:` field.
 
+# Licensing
+
+The Debian packaging MUST have a license that is compatible with the package
+being integrated in Debian, or potential legal problems may arise from
+modifications with incompatible licenses.
+
+It is RECOMMENDED that the Debian packaging uses the same license as the
+upstream programs fonts and, for a package that uses the [DEP-5][DEP5]-style
+for the `debian/copyright` file, a suggested snippet is something like:
+
+    Files: debian/*
+    Copyright: © $date Firstname M. Lastname
+    License: The Debian packaging is distributed under the same license as
+     the Font Software.
+
 # Coordination with a Version Control System
 
 The current preferred method of collaboration of Debian Fonts Task Force is
