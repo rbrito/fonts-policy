@@ -223,6 +223,48 @@ media.
 In any case, the package SHOULD clearly state that the font was manipulated
 in the `README.Debian` file of the generated binary package.
 
+# Maintainance
+
+As a measure of being responsive with the feedback of bugs related to fonts,
+it is RECOMMENDED that fonts be maintained with the Debian Fonts Task Force
+team, and changes of infrastructure (e.g., migration/deprecation of tools,
+changes of best practices) be coordinated with the `pkg-fonts-devel` mailing
+list.
+
+For fonts maintained by the Debian Fonts Task Force, it is RECOMMENDED that
+the `Maintainer:` field of the package be set to the mailing list
+`pkg-fonts-devel@lists.alioth.debian.org`, with the `Uploaders:` field
+listing the maintainers.
+
+It is RECOMMENDED that each source package have *at least* two persons
+listed as the contents of `Uploaders:` field.
+
+# Coordination with a Version Control System
+
+The current preferred method of collaboration of Debian Fonts Task Force is
+to maintain all its packages in a [Subversion repository][SVNREPO], publicly
+browsable with a [web interface][WSVN].
+
+For each package maintained in the Subversion repository of the team, a
+specific layout is REQUIRED. Each source package MUST reside in a
+subdirectory of the form:
+
+    packages/source-package/
+
+where, `packages` is the already existent top-level directory of the team
+repository and *source-package* is the name of the source package that is to
+be maintained in the repository.
+
+At the maintainer discretion, it is RECOMMENDED to have a standard layout of
+Subversion repository: three directories, `branches`, `tags`, and `trunk`.
+
+## Initial packaging of fonts in the repository
+
+FIXME: fill this.
+
+## Release process
+
+FIXME: fill this.
 
 [DFSG]: http://www.debian.org/social_contract
 [DP]: http://www.debian.org/doc/debian-policy/
@@ -234,3 +276,5 @@ in the `README.Debian` file of the generated binary package.
 [RB]: mailto:rbrito@ime.usp.br
 [RFC2119]: http://www.ietf.org/rfc/rfc2119.txt
 [SG]: http://scripts.sil.org/Gentium
+[WSVN]: http://svn.debian.org/wsvn/pkg-fonts
+[SVNREPO]: svn://svn.debian.org/pkg-fonts/
