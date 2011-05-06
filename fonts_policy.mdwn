@@ -1,6 +1,6 @@
 Title: Debian Fonts Task Force Packaging Policy
 State: DRAFT
-Date: 2011-02-28
+Date: 2011-05-05
 Drivers: Rogério Brito <rbrito@ime.usp.br>
 Abstract:
  Propose a file layout, set of conventions and best practices for packaging
@@ -27,21 +27,25 @@ is not a requirement.
 
 * See the work that Fedora has already done.
 * See the discussions in the pkg-fonts-devel.
-* Take non-Latin scripts into account.
+* Take non-Latin scripts into account (need natives help here).
 * Fill in the sections that are not complete.
-* Make the language uniform regarding must/should/etc (perhaps use the
-  definitions from RFC's?).
 * Correct inaccuracies.
 * Replace vague assertions with well-founded references.
 * Copy-edit.
 
 # Definitions
 
+> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+> "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+> document are to be interpreted as described in [RFC 2119][RFC2119].
+
 For the purposes of this document, we assume some familiarity with computer
 fonts and we seek only to standardize the language, not to provide precise
 definitions (especially because some of the concepts are not Mathematically
-formalizable).  We establish the language to be used with the following
-terms:
+formalizable).
+
+We establish the language to be used and, for this, we define, below, terms
+used regarding fonts:
 
 *Alphabet:* an alphabet is a non-empty finite set, whose elements are called
 *symbols* or *letters*.
@@ -72,36 +76,68 @@ implementations of the X Window System being two of the notable exceptions).
 
 In Debian, the font files recognized by fontconfig can be placed either in a
 system-wide or in a user-specific location.  Packages provided in Debian
-have to install fonts in a system-wide location, under the directory
+MUST install fonts in a system-wide location, under the directory hierarchy
 `/usr/share/fonts`.
 
 # Naming of font packages
 
-Packages that contain fonts should be named in a tiplet-form, as
-fonts-*foundry*-*name*, where:
+The naming of package fonts depends on whether they are *source* packages or
+*binary* packages, as defined by the Debian Policy.
+
+## Naming of source packages
+
+Source packages that contain fonts MUST be named in the form of a tuple,
+with the possibilities being `fonts`-*name* or `fonts`-*foundry*-*name*,
+with *foundry* and *name* described below.
+
+Regardless of the form used for the name of the source package, the final
+form MUST consist of lowercase Latin letters (`a-z`), digits (`0-9`), and
+plus (`+`), minus (`-`) and dots (`.`) to be compliant with the Debian
+Policy.
+
+As for fonts it is expected that the names employed be unrestricted to use
+scripts other than the Latin alphabet, it MAY be the case of the use of the
+transliteration.
 
 * *foundry* is the name of the foundry of the particular fonts being
-  packaged, with transliterated to use lowercase Latin letters (a-z), digits
-  (0-9), and plus (+), minus (-) and dots (.) to be compliant with the
-  Debian Policy.
+  packaged.
 
-  Any space should be removed from the name of the foundry, possibly
-  replaced by minus signs, at the option of the packager.
+  Any space in the name of the foundry MUST be removed, with the OPTIONAL
+  use of of minus signs, at the option of the packager.
+  
 * *name* is the name of the font (or fonts) included in the package.
 
-  For packages that include fonts of one or more families, *name* should be
-  the preferred name, as established by *foundry*, without specific
-  qualifications such as shapes (e.g., upright, italic, oblique/slanted,
-  condensed etc.), weights (e.g., light, extra-light, medium, book, bold,
-  extra-bold, black etc.), features (e.g., stylistic alternates, oldstyle
-  figures etc), or similar variations.
+  For source packages that include fonts from one or more families, it is
+  RECOMMENDED (though not mandatory) that separate source packages be
+  created for each family, for ease of installation by the users.
   
-  The same rules of transliteration and use of spaces as with *foundry*
-  apply to *name*.
+  *name* SHOULD be the preferred name, as established by *foundry*, without
+  specific qualifications such as shapes (e.g., upright, italic,
+  oblique/slanted, condensed etc.), weights (e.g., light, extra-light,
+  medium, book, bold, extra-bold, black etc.), features (e.g., stylistic
+  alternates, oldstyle figures etc), or similar variations.
   
   In general, the name to be used as *name* can be obtained as the first
   part (that is, before any colon) of the output of the command `fc-list`
-  for the particular font(s) in question.
+  for the particular fonts in question.
+
+## Naming of binary packages
+
+Binary packages that contain fonts MUST be named in the form of a tuple,
+with the possibilities being *type*-*name* or *type*-*foundry*-*name*, with
+*foundry* and *name* described as in the subsection "Naming of source
+packages".  The *type* part of the naming of the package is one of the
+following, at the moment:
+
+* `ttf`: For TrueType fonts, independent of the fact that they support
+  OpenType extensions.
+
+* `ps`: For PostScript fonts, regardless if they are Type1, Type3 or any
+  other type allowed by the PostScript standard.
+
+* `otf`: For OpenType fonts, independent if they contain cubic (i.e.,
+  PostScript) splines, quadratic (i.e., TrueType) splines, bitmapped parts
+  or any other allowed extension by the OpenType standard.
 
 # Types of fonts
 
@@ -112,12 +148,13 @@ of two types:
   glyph specified by the author of the font. These fonts are usually shipped
   in files with extensions like `pcf` (possibly compressed), `fon`, `mf`
   (with their corresponding `tfm`).
+
 * *Outline fonts:* fonts whose glyphs' *borders* are specified by formulas
-   and are transformed, at the time of use by the user, as a region filled
-   by some color delimited by those borders. These include PostScript Type1
-   (in set of files with extensions `afm`, `pfm`, `pfb`), TrueType (in files
-   with extensions `ttf` or `otf`), and OpenType fonts (in files with
-   extensions `otf`).
+  and are transformed, at the time of use by the user, as a region filled by
+  some color delimited by those borders. These include PostScript Type1 (in
+  set of files with extensions `afm`, `pfm`, `pfb`), TrueType (in files with
+  extensions `ttf` or `otf`), and OpenType fonts (in files with extensions
+  `otf`).
    
 There are other kinds of fonts (like, for instance, stroked fonts, fonts
 mixed with both bitmaps and outlines---examples of the latter are Anonymous
@@ -127,57 +164,64 @@ above are our focus, for the moment.
 ## Location of fonts in the filesystem structure of a Debian system
 
 The files corresponding to a given font are installed in directories
-dependent on the type and name of the font. The fonts must be stored in a
-directory named as `/usr/share/fonts/fonttype/foundry-name/`, where
-`fonttype` is the type (OpenType, TrueType, Type1, etc), `foundry` is the
-foundry (e.g., "makers", "authors", possibly being a company, a foundation,
-or simply a single person) of the fonts, and `name` is the family name of
-the fonts to be installed, with any suffixes like `font` or `fonts` removed.
+dependent on the type and name of the font.
 
-Each element of the path shall be transliterated and converted to lowercase
-to latin letters. It is recommended that the files containing the fonts can
+The fonts MUST be stored in a directory named according to the scheme
+
+    /usr/share/fonts/fonttype/[foundry/]name
+
+where:
+
+* *fonttype* is the type (OpenType, TrueType, PostScript etc.) being
+  packaged, in lowercase.
+* *foundry* is the foundry of the fonts.
+* *name* is the family name of the fonts to be installed, with any suffixes
+  like `font` or `fonts` removed.
+
+It is OPTIONAL the use of the directory part containing the foundry of the
+fonts.
+
+Each element of the path SHALL be transliterated and converted to lowercase
+to latin letters. It is RECOMMENDED that the files containing the fonts can
 retain the preferred names specified by the original authors.
 
-As an example, the [SIL Gentium][SG] fonts, which are distributed in
-TrueType format should be put in the directory
+As examples, the [SIL Gentium][SG] fonts, which are distributed in TrueType
+format SHOULD be put in the directory
 
-    /usr/share/fonts/truetype/sil-gentium/
+    /usr/share/fonts/truetype/sil/gentium/
 
-while the [Linux Libertine][LL] distributed in OpenType format should be put
+while the [Linux Libertine][LL] distributed in OpenType format SHOULD be put
 in the directory:
 
-    /usr/share/fonts/opentype/free-linux-libertine/
+    /usr/share/fonts/opentype/linux-libertine/
 
 Notice that when the font does not have a unique, easily distinguished
 foundry (e.g., when the font is the work of many persons under no
 coordinated project or effort), but the font qualifies as Free Software
 according to [Debian's Free Software Guidelines][DFSG], the foundry can be
-taken as the word `free`.
+omitted or taken as the word `free`.
 
 ## Location of fonts to be used with the TeX typesetting system
 
 FIXME: Fill this in.
 
-# Generation of packages
+# Generation of binary packages
 
-In general, packages containing fonts should not compile (e.g., transform
-upstream's provided `.sfd` source files in [Fontforge][FF]'s format to OTF
-files) during the construction of the package.  The binary packages in the
-Debian system should include the files upstream provided.
+To preserve the forms of the fonts as intended by the original authors,
+packagers MAY opt, for fonts distributed in a final, usable form (e.g.,
+`.ttf`, `.otf` etc.), to ship those files in the binary packages, without
+any build step.
 
-The rationale for the paragraph above is that many fonts used in computers
-are specified in formats that are potentially numerically unstable, and some
-steps used to produce usable fonts may not preserve the "artistic intention"
-of the designer/upstream, if not performed under the very same conditions as
-those of the author of the fonts (and this includes rounding errors of
-spline control points, kerning, hinting etc).
+For packages that only provide sources in [Fontforge][FF]'s format, custom
+scripts MAY be used, if upstream does not provide them.
 
-Only under special circumstances the source package should compile or
-manipulate the fonts provided by upstream. Circumstances where this is
-acceptable are, for instance, the removal of glyphs for reduction of the
-size to fit in installation media.  In any case, the package should clearly
-state that the font was manipulated in the `README.Debian` file of the
-generated binary package.
+Despite the suggestion of shipping fonts that are as close as possible to
+what upstream ships, some manipulation is allowed and even encouraged, for
+the removal of glyphs for reduction of the size to fit in installation
+media.
+
+In any case, the package should clearly state that the font was manipulated
+in the `README.Debian` file of the generated binary package.
 
 
 [DFSG]: http://www.debian.org/social_contract
@@ -188,4 +232,5 @@ generated binary package.
 [LL]: http://linuxlibertine.sf.net/
 [PFD]: mailto:pkg-fonts-devel@lists.alioth.debian.org
 [RB]: mailto:rbrito@ime.usp.br
+[RFC2119]: http://www.ietf.org/rfc/rfc2119.txt
 [SG]: http://scripts.sil.org/Gentium
