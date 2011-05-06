@@ -206,6 +206,56 @@ omitted or taken as the word `free`.
 
 FIXME: Fill this in.
 
+We should take into account that fonts for the standard
+TeX engines are usually in PostScript format (the pk format is not
+mandatory) and we have to respect the TDS, with two extra things to think
+about here:
+
+* fonts provided with texlive should live under
+
+    /usr/share/texmf-texlive/
+
+* fonts provided without texlive should live under
+
+    /usr/share/texmf/
+    
+with a directory tree similar to:
+
+    usr
+    └── share
+        └── texmf
+            ├── doc
+            │   └── fonts
+            │       ├── lucida
+            │       └── lucidabr
+            ├── fonts
+            │   ├── afm
+            │   │   └── bh
+            │   │       └── lucida
+            │   ├── map
+            │   │   ├── dvips
+            │   │   └── vtex
+            │   ├── tfm
+            │   │   └── bh
+            │   │       └── lucida
+            │   ├── type1
+            │   │   └── bh
+            │   │       └── lucida
+            │   └── vf
+            │       └── bh
+            │           └── lucida
+            ├── source
+            │   └── fonts
+            │       ├── lucida
+            │       └── lucidabr
+            └── tex
+                └── latex
+                    ├── lucida
+                    └── lucidabr
+
+FIXME: What is above is *only* a braindump and not a "real" part of this
+document. Patches are welcome.
+
 # Generation of binary packages
 
 To preserve the forms of the fonts as intended by the original authors,
